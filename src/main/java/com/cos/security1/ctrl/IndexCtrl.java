@@ -3,6 +3,9 @@ package com.cos.security1.ctrl;
 import com.cos.security1.dto.entity.User;
 import com.cos.security1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -71,5 +74,23 @@ public class IndexCtrl {
     @GetMapping("/joinProc")
     public @ResponseBody String joinProc(){
         return "회원가입완료";
+    }
+
+    @Secured("ROLE_ADMIN") // spring security 설정에서 사용을 true 로 설정해주면 사용 가능
+    @GetMapping("/info")
+    public @ResponseBody String info(){
+        return "personalinfo";
+    }
+
+    /**
+     * secured 는 하나의 권한만 설정가능 하지만
+     * preauthorize를 사용하면 여러개의 권한을 설정할 수 있다.
+     * 메소드가 실행되기 전에 권한을 검사한다.
+     */
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+//    @PostAuthorize() 메소드가 실행된 후 검사한다.
+    @GetMapping("/date")
+    public @ResponseBody String data(){
+        return "datainfo";
     }
 }
